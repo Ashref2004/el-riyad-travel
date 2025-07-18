@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>الرئيسية | رحلتك المباركة 2025</title>
+    <style>
+        :root {
+            --primary-light: #e8f5e9;
+            --primary: #4caf50;
+            --primary-dark: #2e7d32;
+            --accent: #8bc34a;
+            --gold: #1A94D1;
+            --white: #ffffff;
+            --dark: #1a1a1a;
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            --gradient-gold: linear-gradient(135deg, var(--primary) 0%, var(--gold) 100%);
+            --aura-color: rgba(76, 175, 80, 0.3);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--dark);
+            color: var(--white);
+            overflow-x: hidden;
+            line-height: 1.6;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .video-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            filter: blur(5px) brightness(0.7);
+        }
+        
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.7) 100%);
+            z-index: 0;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 100%;
+            width: 95%;
+            padding: 0 15px;
+            animation: fadeInUp 1.5s ease-out;
+        }
+        
+        .logo-img {
+            width: 220px;
+            height: auto;
+            margin-bottom: 2rem;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.7));
+            transform-style: preserve-3d;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--white);
+            text-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            line-height: 1.3;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--gold), var(--white));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+        
+        h1::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--gradient-gold);
+            border-radius: 3px;
+        }
+        
+        .tagline {
+            font-size: 1.3rem;
+            color: var(--white);
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            font-weight: 400;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .floating-menu {
+            position: fixed;
+            bottom: 20px;
+            right: 50%;
+            transform: translateX(50%);
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(15px);
+            padding: 15px;
+            border-radius: 50px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            animation: slideUp 1s ease-out;
+        }
+        
+        .menu-item {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            color: var(--white);
+            font-size: 1.4rem;
+            border: 2px solid rgba(255,255,255,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .menu-item::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0) 45%,
+                rgba(255, 255, 255, 0.5) 50%,
+                rgba(255, 255, 255, 0) 55%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(30deg);
+            animation: shine 3s infinite;
+        }
+        
+        .menu-item:hover {
+            transform: scale(1.15) translateY(-5px);
+            background: var(--gradient-gold);
+            box-shadow: 0 8px 25px rgba(139, 195, 74, 0.4);
+        }
+        
+        .menu-item:active {
+            transform: scale(0.95);
+        }
+        
+        .aura {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--aura-color) 0%, transparent 70%);
+            filter: blur(20px);
+            z-index: -1;
+            animation: pulse 8s infinite alternate;
+        }
+        
+        .aura-1 {
+            width: 300px;
+            height: 300px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .aura-2 {
+            width: 400px;
+            height: 400px;
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+        
+        .aura-3 {
+            width: 250px;
+            height: 250px;
+            bottom: 10%;
+            left: 30%;
+            animation-delay: 4s;
+        }
+        
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: floatParticle linear infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(3deg); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.1); opacity: 0.9; }
+            100% { transform: scale(0.9); opacity: 0.6; }
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) rotate(30deg); }
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateX(50%) translateY(50px); }
+            to { opacity: 1; transform: translateX(50%) translateY(0); }
+        }
+        
+        @keyframes floatParticle {
+            to { transform: translateY(-100vh); }
+        }
+        
+        .page {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 15, 15, 0.98);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+            transition: right 0.5s cubic-bezier(0.645, 0.045, 0.355, 1);
+            box-shadow: -5px 0 30px rgba(0,0,0,0.5);
+        }
+        
+        .page.active {
+            right: 0;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary);
+            position: relative;
+        }
+        
+        .page-header::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100px;
+            height: 2px;
+            background: var(--gold);
+        }
+        
+        .page-title {
+            color: var(--gold);
+            font-size: 2rem;
+            font-weight: 700;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        
+        .close-page {
+            background: var(--gradient);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            cursor: pointer;
+            border: none;
+            font-size: 1.3rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        .close-page:hover {
+            transform: rotate(90deg);
+            background: var(--gradient-gold);
+        }
+        
+        .branch-card {
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+            overflow: hidden;
+            transition: all 0.4s;
+            border: 1px solid rgba(76, 175, 80, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .branch-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                135deg,
+                rgba(76, 175, 80, 0.1) 0%,
+                rgba(76, 175, 80, 0) 100%
+            );
+            z-index: 0;
+        }
+        
+        .branch-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(76, 175, 80, 0.3);
+            border-color: rgba(76, 175, 80, 0.5);
+        }
+        
+        .branch-header {
+            background: var(--gradient);
+            color: white;
+            padding: 20px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .branch-header::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, var(--gold), transparent);
+        }
+        
+        .branch-body {
+            padding: 25px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .branch-description {
+            margin-bottom: 20px;
+            color: #ddd;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+        
+        .branch-map {
+            width: 100%;
+            height: 250px;
+            background-color: #222;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+        
+        .branch-map iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .branch-contact {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #ccc;
+            font-size: 1.05rem;
+            transition: all 0.3s;
+        }
+        
+        .contact-item:hover {
+            color: var(--gold);
+            transform: translateX(5px);
+        }
+        
+        .contact-item i {
+            color: var(--accent);
+            font-size: 1.2rem;
+            min-width: 25px;
+            text-align: center;
+        }
+        
+        .airline-card {
+            display: flex;
+            align-items: center;
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.4s;
+            border: 1px solid rgba(76, 175, 80, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .airline-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--gradient);
+            transition: all 0.4s;
+        }
+        
+        .airline-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(76, 175, 80, 0.2);
+            border-color: rgba(76, 175, 80, 0.5);
+        }
+        
+        .airline-card:hover::before {
+            width: 100%;
+            opacity: 0.1;
+        }
+        
+        .airline-logo {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            margin-left: 20px;
+            border-radius: 8px;
+            background: white;
+            padding: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+        
+        .airline-name {
+            font-weight: bold;
+            color: var(--gold);
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+        
+        .airline-description {
+            color: #aaa;
+            font-size: 0.95rem;
+        }
+        
+        .hotel-section {
+            margin-bottom: 40px;
+        }
+        
+        .hotel-city {
+            background: var(--gradient);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            display: inline-block;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hotel-city::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.2) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: skewX(-30deg);
+            animation: shineOverlay 3s infinite;
+        }
+        
+        .hotel-card {
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            transition: all 0.4s;
+            border: 1px solid rgba(76, 175, 80, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hotel-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(76, 175, 80, 0.2);
+            border-color: rgba(76, 175, 80, 0.5);
+        }
+        
+        .hotel-card::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, var(--gold), transparent);
+            transition: all 0.4s;
+            transform: scaleX(0);
+            transform-origin: left;
+        }
+        
+        .hotel-card:hover::after {
+            transform: scaleX(1);
+        }
+        
+        .hotel-logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-left: 20px;
+            border-radius: 10px;
+            background: white;
+            padding: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+        
+        .hotel-name {
+            font-weight: bold;
+            color: var(--gold);
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+        
+        .hotel-description {
+            color: #bbb;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+        
+        .about-content {
+            line-height: 1.9;
+            color: #ddd;
+            font-size: 1.05rem;
+        }
+        
+        .about-content p {
+            margin-bottom: 25px;
+            text-align: justify;
+        }
+        
+        .founder-info {
+            background: rgba(46, 125, 50, 0.2);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border-right: 4px solid var(--gold);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .founder-info::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                135deg,
+                rgba(76, 175, 80, 0.1) 0%,
+                rgba(76, 175, 80, 0) 100%
+            );
+            z-index: -1;
+        }
+        
+        .founder-name {
+            font-weight: bold;
+            color: var(--gold);
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .founder-name::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background: var(--gradient);
+        }
+        
+        .mission-vision {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .mission-box, .vision-box {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(30, 30, 30, 0.7);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .mission-box::before, .vision-box::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient);
+        }
+        
+        .mission-box h3, .vision-box h3 {
+            color: var(--gold);
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .mission-box h3 i, .vision-box h3 i {
+            font-size: 1.5rem;
+        }
+        
+        .mission-box p, .vision-box p {
+            color: #bbb;
+            line-height: 1.8;
+        }
+        
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .stat-item {
+            flex: 1;
+            min-width: 150px;
+            background: rgba(46, 125, 50, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--gold);
+            margin-bottom: 5px;
+            background: linear-gradient(to right, var(--gold), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-label {
+            color: #bbb;
+            font-size: 0.95rem;
+        }
+        
+        .program-section {
+            margin-bottom: 40px;
+        }
+        
+        .program-category {
+            background: var(--gradient);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            display: inline-block;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .program-card {
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+            overflow: hidden;
+            transition: all 0.4s;
+            border: 1px solid rgba(76, 175, 80, 0.2);
+            position: relative;
+        }
+        
+        .program-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(76, 175, 80, 0.3);
+            border-color: rgba(76, 175, 80, 0.5);
+        }
+        
+        .program-header {
+            background: var(--gradient-gold);
+            color: white;
+            padding: 20px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .program-header::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), transparent);
+        }
+        
+        .program-body {
+            padding: 25px;
+            position: relative;
+        }
+        
+        .program-description {
+            margin-bottom: 20px;
+            color: #ddd;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+        
+        .program-features {
+            margin-bottom: 25px;
+        }
+        
+        .feature-title {
+            color: var(--gold);
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .feature-title i {
+            color: var(--accent);
+        }
+        
+        .features-list {
+            list-style-type: none;
+            margin-right: 20px;
+        }
+        
+        .features-list li {
+            position: relative;
+            padding-right: 25px;
+            margin-bottom: 10px;
+            color: #bbb;
+        }
+        
+        .features-list li::before {
+            content: "\f00c";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            right: 0;
+            color: var(--accent);
+        }
+        
+        .program-price {
+            background: rgba(46, 125, 50, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+        
+        .price-label {
+            color: #ccc;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .price-amount {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--gold);
+            margin-bottom: 5px;
+        }
+        
+        .price-note {
+            color: #aaa;
+            font-size: 0.85rem;
+            font-style: italic;
+        }
+        
+        .program-cta {
+            display: block;
+            background: var(--gradient);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+        
+        .program-cta:hover {
+            background: var(--gradient-gold);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(139, 195, 74, 0.4);
+        }
+        
+        .program-cta:active {
+            transform: translateY(0);
+        }
+        
+        @keyframes shineOverlay {
+            0% { transform: skewX(-30deg) translateX(-150%); }
+            100% { transform: skewX(-30deg) translateX(150%); }
+        }
+        
+        .glow {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: -1;
+            background: radial-gradient(circle at center, var(--aura-color) 0%, transparent 70%);
+            opacity: 0.3;
+            animation: pulseGlow 10s infinite alternate;
+        }
+        
+        @keyframes pulseGlow {
+            0% { transform: scale(1); opacity: 0.2; }
+            50% { transform: scale(1.1); opacity: 0.4; }
+            100% { transform: scale(0.9); opacity: 0.1; }
+        }
+        
+        .holy-text {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .holy-text::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, var(--gold), var(--primary));
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.5s ease;
+        }
+        
+        .holy-text:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .tagline {
+                font-size: 1.1rem;
+            }
+            
+            .logo-img {
+                width: 180px;
+            }
+            
+            .floating-menu {
+                gap: 10px;
+                padding: 12px;
+                bottom: 15px;
+            }
+            
+            .menu-item {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+            
+            .page-title {
+                font-size: 1.6rem;
+            }
+            
+            .branch-card, .airline-card, .hotel-card, .program-card {
+                padding: 15px;
+            }
+            
+            .branch-map {
+                height: 200px;
+            }
+            
+            .hotel-logo, .airline-logo {
+                width: 60px;
+                height: 60px;
+                margin-left: 15px;
+            }
+            
+            .program-header {
+                font-size: 1.2rem;
+                padding: 15px;
+            }
+            
+            .program-body {
+                padding: 15px;
+            }
+            
+            .price-amount {
+                font-size: 1.5rem;
+            }
+        }
+        
+        @media (min-width: 1200px) {
+            .page {
+                width: 80%;
+                max-width: 1200px;
+                right: -80%;
+            }
+            
+            .page.active {
+                right: 10%;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="glow"></div>
+    <div class="aura aura-1"></div>
+    <div class="aura aura-2"></div>
+    <div class="aura aura-3"></div>
+    
+    <div class="particles" id="particles-js"></div>
+    
+    <div class="hero">
+        <video autoplay muted loop playsinline class="video-background">
+            <source src="static/hero-video.mp4" type="video/mp4">
+        </video>
+        
+        <div class="hero-content">
+            <img src="static/logo.jpg" alt="شعار الوكالة" class="logo-img">
+            <h1 class="holy-text">رحلتك المباركة تبدأ معنا</h1>
+            <p class="tagline">نسعى لجعل عمرتك تجربة روحانية لا تنسى بأرقى الخدمات وأكمل الترتيبات، نقدم لك تجربة عمرة استثنائية بلمسة من الإبداع والإتقان</p>
+        </div>
+    </div>
+    
+    <div class="floating-menu">
+        <div class="menu-item" title="الفنادق" data-page="hotels"><i class="fas fa-hotel"></i></div>
+        <div class="menu-item" title="الخطوط الجوية" data-page="airlines"><i class="fas fa-plane"></i></div>
+        <div class="menu-item" title="فروعنا" data-page="branches"><i class="fas fa-map-marker-alt"></i></div>
+        <div class="menu-item" title="من نحن" data-page="about"><i class="fas fa-info-circle"></i></div>
+        <a href="static/index-1.html" class="menu-item" title="برامج العمرة"><i class="fas fa-calendar-alt"></i></a>
+    </div>
+    
+    <div class="page" id="branches-page">
+        <div class="page-header">
+            <h2 class="page-title">فروعنا</h2>
+            <button class="close-page"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div class="branch-card">
+            <div class="branch-header">الفرع الرئيسي - العاصمة</div>
+            <div class="branch-body">
+                <p class="branch-description">
+                    فرعنا الرئيسي في قلب العاصمة، يقدم جميع خدمات الحج والعمرة بفريق متخصص ذو خبرة واسعة. نتميز بموقعنا الاستراتيجي وقربنا من المطار الدولي لتسهيل إجراءات السفر. لدينا قاعة استقبال فاخرة مجهزة بأحدث التقنيات لشرح مناسك العمرة.
+                </p>
+                <div class="branch-map">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d25580.4233700455!2d3.0585846!3d36.7528878!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x128fb3a60a9eec7d%3A0x9f5a3e8a8e7c1b1e!2sAlgiers%2C%20Algeria!5e0!3m2!1sen!2sus!4v1620000000000!5m2!1sen!2sus" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+                <div class="branch-contact">
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>0771312479</span>
+                        <span>0780758130</span>
+                        <span>0550233269</span>
+                        <span>0550190048</span>
+                        <span>0674043104</span>
+                        <span>046534729</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>elriyadhtravel@gmail.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-clock"></i>
+                        <span>من السبت إلى الخميس - 8:00 إلى 16:00</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-wifi"></i>
+                        <span>خدمة الإنترنت المجاني للزوار</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="branch-card">
+            <div class="branch-header">فرع سطيف</div>
+            <div class="branch-body">
+                <p class="branch-description">
+                    فرع سطيف يقدم خدمات متكاملة لأهالي المنطقة الشرقية، مع فريق استقبال متعدد اللغات. نحرص على تقديم النصائح والإرشادات الدينية قبل السفر لضمان عمرة مباركة. لدينا مركز تدريب خاص بالمناسك مع محاكاة افتراضية لخطوات العمرة.
+                </p>
+                <div class="branch-map">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d25580.4233700455!2d5.3699528!3d36.1912727!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12f3114753a3a5a9%3A0x1c7f4a9f1c1d1d1d!2sSetif%2C%20Algeria!5e0!3m2!1sen!2sus!4v1620000000000!5m2!1sen!2sus" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+                <div class="branch-contact">
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>0771312479</span>
+                        <span>0664752919</span>
+                        <span>0772006704</span>
+                        <span>0780758130</span>
+                        <span>0550233269</span>
+                        <span>0550190048</span>
+                        <span>0674043104</span>
+                        <span>046534729</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>elriyadhtravel@gmail.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-clock"></i>
+                        <span>من السبت إلى الخميس - 8:30 إلى 16:30</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-praying-hands"></i>
+                        <span>قاعة صلاة مجهزة للزوار</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="branch-card">
+            <div class="branch-header">فرع شلف</div>
+            <div class="branch-body">
+                <p class="branch-description">
+                    فرعنا في شلف يتميز بفريق شاب متحمس لخدمة المعتمرين، مع توفير برامج عمرة متنوعة تناسب جميع الفئات. نقدم عروضاً خاصة للمجموعات والعائلات. لدينا نظام حجز إلكتروني متطور يمكنك من متابعة كل تفاصيل رحلتك من خلاله.
+                </p>
+                <div class="branch-map">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d25580.4233700455!2d1.3315156!3d36.1646852!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x128f4b3b5b5b5b5b%3A0x1c7f4a9f1c1d1d1d!2sChlef%2C%20Algeria!5e0!3m2!1sen!2sus!4v1620000000000!5m2!1sen!2sus" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+                <div class="branch-contact">
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>0771312479</span>
+                        <span>0666085924</span>
+                        <span>0659021019</span>
+                        <span>0780758130</span>
+                        <span>0550233269</span>
+                        <span>0550190048</span>
+                        <span>0674043104</span>
+                        <span>046534729</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>elriyadhtravel@gmail.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-clock"></i>
+                        <span>من السبت إلى الخميس - 8:00 إلى 16:00</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-car"></i>
+                        <span>مواقف مجانية للسيارات</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="branch-card">
+            <div class="branch-header">فرع تيسمسيلت</div>
+            <div class="branch-body">
+                <p class="branch-description">
+                    فرع تيسمسيلت هو الفرع الأول للوكالة حيث بدأت رحلتنا عام 2019. نفتخر بخدمة أهالي المنطقة الغربية بخبرة وكفاءة عالية، مع توفير مرشدين دينيين متخصصين. لدينا مكتبة إسلامية متكاملة يمكن للزوار الاستفادة منها أثناء انتظار إتمام الإجراءات.
+                </p>
+                <div class="branch-map">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d25580.4233700455!2d1.8105246!3d35.6076523!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x128f4b3b5b5b5b5b%3A0x1c7f4a9f1c1d1d1d!2sTissemsilt%2C%20Algeria!5e0!3m2!1sen!2sus!4v1620000000000!5m2!1sen!2sus" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+                <div class="branch-contact">
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>0771312479</span>
+                        <span>0780758130</span>
+                        <span>0550233269</span>
+                        <span>0550190048</span>
+                        <span>0674043104</span>
+                        <span>046534729</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>elriyadhtravel@gmail.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-clock"></i>
+                        <span>من السبت إلى الخميس - 8:00 إلى 16:00</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-child"></i>
+                        <span>ركن أطفال مجهز للعائلات</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="page" id="airlines-page">
+        <div class="page-header">
+            <h2 class="page-title">الخطوط الجوية المتعاقد معها</h2>
+            <button class="close-page"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div class="airline-card">
+            <img src="static/airline_algerie.png" alt="الخطوط الجزائرية" class="airline-logo">
+            <div>
+                <div class="airline-name">الخطوط الجوية الجزائرية</div>
+                <div class="airline-description">الشركة الوطنية للنقل الجوي، تقدم رحلات مباشرة إلى جدة والمدينة المنورة</div>
+            </div>
+        </div>
+        
+        <div class="airline-card">
+            <img src="static/airline_turkish.png" alt="الخطوط التركية" class="airline-logo">
+            <div>
+                <div class="airline-name">الخطوط الجوية التركية</div>
+                <div class="airline-description">شركة الطيران الوطنية لتركيا، رحلات مريحة مع توقف في اسطنبول</div>
+            </div>
+        </div>
+        
+        <div class="airline-card">
+            <img src="static/airline_emirates.png" alt="الخطوط الإماراتية" class="airline-logo">
+            <div>
+                <div class="airline-name">الخطوط الجوية الإماراتية</div>
+                <div class="airline-description">إحدى أفضل شركات الطيران في العالم، رحلات عبر دبي</div>
+            </div>
+        </div>
+        
+        <div class="airline-card">
+            <img src="static/airline_egypt.png" alt="الخطوط المصرية" class="airline-logo">
+            <div>
+                <div class="airline-name">الخطوط الجوية المصرية</div>
+                <div class="airline-description">شركة الطيران الوطنية لمصر، رحلات عبر القاهرة</div>
+            </div>
+        </div>
+        
+        <div class="airline-card">
+            <img src="static/airline_tunisia.png" alt="الخطوط التونسية" class="airline-logo">
+            <div>
+                <div class="airline-name">الخطوط الجوية التونسية</div>
+                <div class="airline-description">شركة الطيران الوطنية لتونس، رحلات عبر تونس</div>
+            </div>
+        </div>
+        
+        <div class="airline-card">
+            <img src="static/airline_flynas.png" alt="طيران الناس" class="airline-logo">
+            <div>
+                <div class="airline-name">طيران الناس</div>
+                <div class="airline-description">شركة طيران سعودية اقتصادية، رحلات داخل المملكة</div>
+            </div>
+        </div>
+        
+        <div class="airline-card">
+            <img src="static/airline_arabia.png" alt="العربية للطيران" class="airline-logo">
+            <div>
+                <div class="airline-name">العربية للطيران</div>
+                <div class="airline-description">أكبر شركة طيران اقتصادية في الشرق الأوسط، رحلات عبر الشارقة</div>
+            </div>
+        </div>
+        
+        <div class="airline-card">
+            <img src="static/airline_saudi.png" alt="الخطوط السعودية" class="airline-logo">
+            <div>
+                <div class="airline-name">الخطوط الجوية السعودية</div>
+                <div class="airline-description">شركة الطيران الوطنية للمملكة العربية السعودية، رحلات مباشرة</div>
+            </div>
+        </div>
+        
+        <div class="airline-card">
+            <img src="static/airline_jordan.png" alt="الخطوط الأردنية" class="airline-logo">
+            <div>
+                <div class="airline-name">الخطوط الجوية الأردنية</div>
+                <div class="airline-description">شركة الطيران الوطنية للأردن، رحلات عبر عمان</div>
+            </div>
+        </div>
+        
+        <div class="airline-card">
+            <img src="static/airline_qatar.png" alt="الخطوط القطرية" class="airline-logo">
+            <div>
+                <div class="airline-name">الخطوط الجوية القطرية</div>
+                <div class="airline-description">واحدة من أفضل شركات الطيران في العالم، رحلات عبر الدوحة</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="page" id="hotels-page">
+        <div class="page-header">
+            <h2 class="page-title">الفنادق المتعاقد معها</h2>
+            <button class="close-page"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div class="hotel-section">
+            <div class="hotel-city">مكة المكرمة</div>
+            
+            <div class="hotel-card">
+                <img src="static/diyafa.png" alt="فندق الضيافة العالمية" class="hotel-logo">
+                <div>
+                    <div class="hotel-name">مجموعة فنادق الضيافة العالمية</div>
+                    <div class="hotel-description">
+                        تقع على بعد خطوات من الحرم المكي الشريف، توفر غرف فاخرة وخدمات مميزة للمعتمرين مع إطلالة مباشرة على الكعبة المشرفة. جميع الغرف مجهزة بتقنيات حديثة ونظام عزل صوتي ممتاز. يتوفر مطعمان يقدمان بوفيه متنوع من الأطباق العربية والعالمية.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hotel-card">
+                <img src="static/masa.png" alt="فندق الماسة" class="hotel-logo">
+                <div>
+                    <div class="hotel-name">فندق الماسة</div>
+                    <div class="hotel-description">
+                        يبعد 200 متر فقط عن الحرم، يوفر غرف مكيفة وخدمات نقل مجانية للحرم ووجبات يومية متنوعة. يتميز الفندق بفريق عمل متعدد اللغات وقاعة اجتماعات مجهزة لعقد الندوات الدينية. يتوفر مركز صحي وخدمة تنظيف يومية للملابس.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hotel-card">
+                <img src="static/house.png" alt="فندق البيت المعمور" class="hotel-logo">
+                <div>
+                    <div class="hotel-name">فندق البيت المعمور</div>
+                    <div class="hotel-description">
+                        فندق 5 نجوم مع إطلالة بانورامية على الحرم المكي، يقدم خدمات الواي فاي المجاني ومركز أعمال ومواقف سيارات. يحتوي على صالة رياضية مجهزة وساونا ومركز سبا. يقدم برامج تثقيفية عن مناسك العمرة بإشراف مرشدين متخصصين.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hotel-card">
+                <img src="static/kas.png" alt="فندق القصي" class="hotel-logo">
+                <div>
+                    <div class="hotel-name">فندق القصي</div>
+                    <div class="hotel-description">
+                        يقع في قلب مكة على بعد 150 متر من الحرم المكي، يوفر غرف عائلية واسعة مع مناطق جلوس منفصلة. يتميز بمطعم يقدم أطباقا صحية وفقا لمعايير التغذية السليمة. يقدم خدمة الإرشاد الديني وبرامج تعليمية للأطفال.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="hotel-section">
+            <div class="hotel-city">المدينة المنورة</div>
+            
+            <div class="hotel-card">
+                <img src="static/mokhtara.png" alt="فندق المختارة" class="hotel-logo">
+                <div>
+                    <div class="hotel-name">مجموعة فنادق المختارة</div>
+                    <div class="hotel-description">
+                        يقع على بعد 5 دقائق سيراً من المسجد النبوي، يوفر غرف عائلية واسعة وخدمات تنظيف يومية ومرشدين للزوار. جميع الغرف مزودة بشاشات عرض للقنوات الدينية وخدمة الاستيقاظ لصلاة الفجر. يتوفر مكتبة إسلامية وصالة لتعليم القرآن الكريم.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hotel-card">
+                <img src="static/anwar.png" alt="فندق الأنوار" class="hotel-logo">
+                <div>
+                    <div class="hotel-name">فندق الأنوار</div>
+                    <div class="hotel-description">
+                        فندق 4 نجوم مع إطلالة على المسجد النبوي، يقدم وجبات إفطار متنوعة وخدمات الغسيل والكي. يتميز بفريق طبي متاح على مدار الساعة وخدمة الصيدلية. يوفر وسائل نقل مكيفة للمسجد النبوي على مدار اليوم.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hotel-card">
+                <img src="static/kibla.png" alt="فندق القبلتين" class="hotel-logo">
+                <div>
+                    <div class="hotel-name">فندق القبلتين</div>
+                    <div class="hotel-description">
+                        يتميز بموقعه الاستراتيجي بالقرب من المسجد النبوي، مع غرف مريحة وخدمات نقل مجانية للمسجد. يوفر نظام صوتي داخلي لبث خطب الجمعة والأذان. يحتوي على مركز تجاري صغير لاحتياجات المعتمرين.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hotel-card">
+                <img src="static/hodoa.png" alt="فندق الهدوء" class="hotel-logo">
+                <div>
+                    <div class="hotel-name">فندق الهدوء</div>
+                    <div class="hotel-description">
+                        يبعد 10 دقائق عن المسجد النبوي، يوفر بيئة هادئة ومناسبة للعبادة والراحة. يتميز بحديقة داخلية ومصلى واسع. يقدم برامج ترفيهية هادئة مثل حلقات الذكر وقراءة القرآن الجماعية.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="page" id="about-page">
+        <div class="page-header">
+            <h2 class="page-title">من نحن</h2>
+            <button class="close-page"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div class="about-content">
+            <p>
+                نحن وكالة <span class="holy-text">"الرياض"</span> المتخصصة في تنظيم رحلات الحج والعمرة، نعتبر جسر الثقة بين المعتمرين وخدمات العمرة المميزة في الأراضي المقدسة. نقدم تجربة عمرة متكاملة تجمع بين الأصالة الدينية والراحة العصرية.
+            </p>
+            
+            <p>
+                تأسست الوكالة عام 2019 بولاية تيسمسيلت برؤية طموحة تهدف إلى تقديم خدمات حج وعمرة متميزة بمعايير عالمية، مع الحفاظ على الروحانية والأصالة التي تميز هذه الرحلة المباركة. ومنذ ذلك الحين، كبرنا لنصبح أحد أهم وكلاء الحج والعمرة في الجزائر.
+            </p>
+            
+            <div class="mission-vision">
+                <div class="mission-box">
+                    <h3><i class="fas fa-bullseye"></i> رسالتنا</h3>
+                    <p>
+                        نسعى لتقديم خدمات حج وعمرة متميزة تلبي أعلى معايير الجودة والراحة، مع الحفاظ على الجو الروحاني لهذه الرحلة المباركة. نحرص على توفير كل ما يجعل عمرة عملائنا سهلة وميسرة ومقبولة إن شاء الله.
+                    </p>
+                </div>
+                
+                <div class="vision-box">
+                    <h3><i class="fas fa-eye"></i> رؤيتنا</h3>
+                    <p>
+                        أن نكون الوكالة الرائدة في مجال الحج والعمرة بالجزائر، من خلال تقديم حلول مبتكرة وخدمات استثنائية، وأن نكون الخيار الأول لكل من يرغب في أداء هذه الفريضة بكل يسر وسهولة.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number">6+</div>
+                    <div class="stat-label">سنوات من الخبرة</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">15K+</div>
+                    <div class="stat-label">معتمر راضٍ</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">فروع في الجزائر</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">فريق عمل متخصص</div>
+                </div>
+            </div>
+            
+            <p>
+                بدأت رحلتنا بفرع واحد صغير في تيسمسيلت، وبفضل ثقة عملائنا وتفاني فريقنا، توسعنا لافتتاح فروع في أهم الولايات الجزائرية، لنكون أقرب إلى عملائنا في كل مكان. نفتخر بأننا نتعامل مع أفضل الفنادق في مكة المكرمة والمدينة المنورة، ونختار بعناية شركات الطيران التي توفر أعلى معايير الراحة والأمان لضيوف الرحمن.
+            </p>
+            
+            <p>
+                فريقنا يتكون من مستشارين متخصصين في شؤون الحج والعمرة، ومرشدين دينيين، وموظفي خدمة عملاء متعددي اللغات، جميعهم يعملون بتفانٍ لضمان رحلة مباركة ومريحة لعملائنا. نؤمن بأن العمرة ليست مجرد رحلة، بل هي مناسبة روحانية عظيمة، لذلك نحرص على تقديم النصائح والإرشادات الدينية، وترتيب البرامج التي تعزز الجانب التعبدي في الرحلة.
+            </p>
+            
+            <p>
+                نقدم مجموعة متنوعة من برامج العمرة التي تناسب جميع الفئات والميزانيات، من البرامج الاقتصادية إلى الفاخرة، مع مراعاة أعلى معايير الجودة والسلامة في كل التفاصيل. كما نحرص على متابعة المعتمرين خلال رحلتهم وتقديم الدعم اللازم لهم في كل خطوة.
+            </p>
+            
+            <p>
+                نسعى دائماً للتطوير والتحسين، ونعتبر كل معتمر هو سفير لنا، لذلك نقدم له أفضل ما لدينا ليعود إلى وطنه بحسنات كثيرة وذكريات جميلة عن عمرة ميسرة ومقبولة إن شاء الله. نفتخر بكوننا جزءاً من رحلته الروحانية ونسأل الله أن يتقبل منا ومنه صالح الأعمال.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const video = document.querySelector('.video-background');
+            if (video) {
+                video.setAttribute('preload', 'none');
+                video.setAttribute('playsinline', '');
+                video.setAttribute('muted', '');
+                video.setAttribute('loop', '');
+                
+                setTimeout(() => {
+                    video.play().catch(e => {
+                        console.log("فشل التشغيل التلقائي للفيديو:", e);
+                    });
+                }, 500);
+            }
+            
+            createParticles();
+            
+            document.querySelectorAll('.menu-item').forEach(item => {
+                if (!item.hasAttribute('href')) {
+                    item.addEventListener('click', function() {
+                        const pageId = this.getAttribute('data-page');
+                        if (pageId) {
+                            document.getElementById(`${pageId}-page`).classList.add('active');
+                            document.body.style.overflow = 'hidden';
+                        }
+                    });
+                }
+            });
+            
+            document.querySelectorAll('.close-page').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.closest('.page').classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                });
+            });
+            
+            document.querySelectorAll('.page').forEach(page => {
+                page.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        this.classList.remove('active');
+                        document.body.style.overflow = 'auto';
+                    }
+                });
+            });
+            
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function(event) {
+                const now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) {
+                    event.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, false);
+        });
+        
+        function createParticles() {
+            const particlesContainer = document.querySelector('.particles');
+            const particleCount = window.innerWidth < 768 ? 15 : 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                const size = Math.random() * 5 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.bottom = `-${size}px`;
+                
+                const duration = Math.random() * 20 + 10;
+                const delay = Math.random() * 10;
+                particle.style.animationDuration = `${duration}s`;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particle.style.opacity = Math.random() * 0.5 + 0.1;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+    </script>
+</body>
+</html>

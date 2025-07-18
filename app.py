@@ -415,50 +415,6 @@ def update_trip_status(trip_id):
         if conn:
             conn.close()
 
-@app.route('/api/bookings', methods=['GET'])
-def get_bookings():
-    conn = None
-    try:
-        conn = get_db()
-        c = conn.cursor()
-
-        c.execute('''SELECT b.*, t.date as trip_date, t.airline as trip_airline 
-                   FROM bookings b JOIN trips t ON b.trip_id = t.id''')
-        bookings = c.fetchall()
-
-        bookings_list = []
-        for booking in bookings:
-            bookings_list.append({
-                'id': booking['id'],
-                'trip_id': booking['trip_id'],
-                'firstName': booking['first_name'],
-                'lastName': booking['last_name'],
-                'email': booking['email'],
-                'phone': booking['phone'],
-                'birthDate': booking['birth_date'],
-                'birthPlace': booking['birth_place'],
-                'passportNumber': booking['passport_number'],
-                'passportIssueDate': booking['passport_issue_date'],
-                'passportExpiryDate': booking['passport_expiry_date'],
-                'umrahType': booking['umrah_type'],
-                'roomType': booking['room_type'],
-                'notes': booking['notes'],
-                'status': booking['status'],
-                'bookingDate': booking['booking_date'],
-                'trip': {
-                    'date': booking['trip_date'],
-                    'airline': booking['trip_airline']
-                }
-            })
-
-        return jsonify({'bookings': bookings_list})
-    except Exception as e:
-        logger.error(f"Error getting bookings: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-    finally:
-        if conn:
-            conn.close()
-
 @app.route('/api/bookings', methods=['POST'])
 def create_booking():
     conn = None
@@ -629,6 +585,50 @@ def get_stats():
     finally:
         if conn:
             conn.close()
+
+@app.route('/api/bookings', methods=['GET'])
+def get_bookings():
+    conn = None
+    try:
+        conn = get_db()
+        c = conn.cursor()
+
+        c.execute('''SELECT b.*, t.date as trip_date, t.airline as trip_airline 
+                   FROM bookings b JOIN trips t ON b.trip_id = t.id''')
+        bookings = c.fetchall()
+
+        bookings_list = []
+        for booking in bookings:
+            bookings_list.append({
+                'id': booking['id'],
+                'tripId': booking['trip_id'],
+                'firstName': booking['first_name'],
+                'lastName': booking['last_name'],
+                'email': booking['email'],
+                'phone': booking['phone'],
+                'birthDate': booking['birth_date'],
+                'birthPlace': booking['birth_place'],
+                'passportNumber': booking['passport_number'],
+                'passportIssueDate': booking['passport_issue_date'],
+                'passportExpiryDate': booking['passport_expiry_date'],
+                'umrahType': booking['umrah_type'],
+                'roomType': booking['room_type'],
+                'notes': booking['notes'],
+                'status': booking['status'],
+                'bookingDate': booking['booking_date'],
+                'trip': {
+                    'date': booking['trip_date'],
+                    'airline': booking['trip_airline']
+                }
+            })
+
+        return jsonify(bookings_list)  # تم تغيير هذا السطر ليعيد المصفوفة مباشرة
+    except Exception as e:
+        logger.error(f"Error getting bookings: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        if conn:
+            conn.close()            
 
 @app.route('/api/add-test-data', methods=['GET'])
 def add_test_data():

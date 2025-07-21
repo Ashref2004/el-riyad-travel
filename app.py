@@ -11,7 +11,6 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__, static_folder='static', template_folder='.')
 
-# Configure CORS
 CORS(app, resources={
     r"/api/*": {
         "origins": ["http://localhost:*", "http://127.0.0.1:*"],
@@ -27,7 +26,6 @@ def init_db():
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
 
-        # Create trips table
         c.execute('''CREATE TABLE IF NOT EXISTS trips (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             date TEXT NOT NULL,
@@ -300,6 +298,33 @@ def create_trip():
     finally:
         if conn:
             conn.close()
+
+@app.route('/api/trips/<int:trip_id>', methods=['DELETE'])
+def delete_trip(trip_id):
+    conn = None
+    try:
+        conn = get_db()
+        c = conn.cursor()
+
+        # تحقق هل توجد حجوزات مرتبطة بالرحلة
+        c.execute('SELECT COUNT(*) FROM bookings WHERE trip_id = ?', (trip_id,))
+        bookings_count = c.fetchone()[0]
+
+        if bookings_count > 0:
+            return jsonify({'error': 'Cannot delete trip with existing bookings'}), 400
+
+        c.execute('DELETE FROM trips WHERE id = ?', (trip_id,))
+        conn.commit()
+
+        return jsonify({'message': 'Trip deleted successfully'})
+    except Exception as e:
+        logger.error(f"Error deleting trip {trip_id}: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        if conn:
+            conn.close()
+
+
 
 @app.route('/api/trips/<int:trip_id>', methods=['PUT'])
 def update_trip(trip_id):
@@ -594,11 +619,14 @@ def get_bookings():
         c = conn.cursor()
 
         c.execute('''SELECT b.*, t.date as trip_date, t.airline as trip_airline 
-                   FROM bookings b JOIN trips t ON b.trip_id = t.id''')
-        bookings = c.fetchall()
+                     FROM bookings b JOIN trips t ON b.trip_id = t.id''')
+        bookings = c.fetchall()  # ✅ فقط مرة وحدة
 
         bookings_list = []
         for booking in bookings:
+            trip_date = booking['trip_date'] if 'trip_date' in booking.keys() else None
+            trip_airline = booking['trip_airline'] if 'trip_airline' in booking.keys() else None
+
             bookings_list.append({
                 'id': booking['id'],
                 'tripId': booking['trip_id'],
@@ -617,80 +645,19 @@ def get_bookings():
                 'status': booking['status'],
                 'bookingDate': booking['booking_date'],
                 'trip': {
-                    'date': booking['trip_date'],
-                    'airline': booking['trip_airline']
+                    'date': trip_date,
+                    'airline': trip_airline
                 }
             })
 
-        return jsonify(bookings_list)  # تم تغيير هذا السطر ليعيد المصفوفة مباشرة
+        return jsonify(bookings_list)
     except Exception as e:
         logger.error(f"Error getting bookings: {str(e)}")
         return jsonify({'error': str(e)}), 500
     finally:
         if conn:
-            conn.close()            
-
-@app.route('/api/add-test-data', methods=['GET'])
-def add_test_data():
-    conn = None
-    try:
-        conn = get_db()
-        c = conn.cursor()
-        
-        # Add sample trip
-        c.execute('''INSERT INTO trips 
-            (date, airline, airline_logo, hotel, hotel_logo, hotel_distance, 
-             route, duration, type, state,
-             room5_price, room4_price, room3_price, room2_price)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
-            (
-                '2023-12-01', 
-                'الجزائرية', 
-                'airline_algerie.png',
-                'الأنوار', 
-                'anwar.png',
-                '300م',
-                'الجزائر-جدة-مكة', 
-                10, 
-                'economy', 
-                'algiers',
-                50000, 
-                60000, 
-                70000, 
-                80000
-            ))
-        
-        # Add sample booking
-        c.execute('''INSERT INTO bookings 
-            (trip_id, first_name, last_name, email, phone, birth_date, birth_place,
-             passport_number, passport_issue_date, passport_expiry_date, umrah_type,
-             room_type, notes, booking_date)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
-            (
-                1,
-                'محمد',
-                'أحمد',
-                'mohamed@example.com',
-                '0551234567',
-                '1990-01-01',
-                'algiers',
-                '12345678',
-                '2020-01-01',
-                '2025-01-01',
-                'single',
-                '2',
-                'ملاحظات اختبارية',
-                datetime.now().isoformat()
-            ))
-        
-        conn.commit()
-        return jsonify({'message': 'تمت إضافة بيانات الاختبار بنجاح'})
-    except Exception as e:
-        logger.error(f"Error adding test data: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-    finally:
-        if conn:
             conn.close()
+           
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))

@@ -595,7 +595,6 @@ def delete_booking(booking_id):
     finally:
         if conn:
             conn.close()
-
 @app.route('/api/stats', methods=['GET'])
 def get_stats():
     conn = None
@@ -618,12 +617,12 @@ def get_stats():
         # Get bookings by state
         c.execute('''SELECT b.birth_place as state, COUNT(*) as count 
                    FROM bookings b GROUP BY b.birth_place''')
-        state_stats = {row['state']: row['count'] for row in c.fetchall()}
+        state_stats = {row[0]: row[1] for row in c.fetchall()}
 
         # Get bookings by type
         c.execute('''SELECT umrah_type as type, COUNT(*) as count 
                    FROM bookings GROUP BY umrah_type''')
-        type_stats = {row['type']: row['count'] for row in c.fetchall()}
+        type_stats = {row[0]: row[1] for row in c.fetchall()}
 
         return jsonify({
             'total_bookings': total_bookings,
@@ -639,6 +638,7 @@ def get_stats():
     finally:
         if conn:
             conn.close()
+
 
 @app.route('/api/bookings', methods=['GET'])
 def get_bookings():

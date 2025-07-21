@@ -30,11 +30,7 @@ def init_db():
         conn = get_db()
         c = conn.cursor()
 
-        # Drop tables if they exist (for development only)
-        c.execute("DROP TABLE IF EXISTS bookings")
-        c.execute("DROP TABLE IF EXISTS trips")
 
-        # Create trips table
         c.execute('''CREATE TABLE IF NOT EXISTS trips (
             id SERIAL PRIMARY KEY,
             date TEXT NOT NULL,
@@ -57,7 +53,6 @@ def init_db():
             room2_status TEXT NOT NULL DEFAULT 'available'
         )''')
 
-        # Create bookings table
         c.execute('''CREATE TABLE IF NOT EXISTS bookings (
             id SERIAL PRIMARY KEY,
             trip_id INTEGER NOT NULL,
@@ -78,7 +73,6 @@ def init_db():
             FOREIGN KEY (trip_id) REFERENCES trips (id) ON DELETE CASCADE
         )''')
 
-        # Check if tables exist
         c.execute("SELECT table_name FROM information_schema.tables WHERE table_schema='public'")
         tables = c.fetchall()
         logger.debug(f"Tables in database: {tables}")

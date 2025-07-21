@@ -483,19 +483,23 @@ def create_booking():
         conn = get_db()
         c = conn.cursor()
 
-        # Check if trip exists
+        # التحقق من وجود الرحلة
         c.execute('SELECT * FROM trips WHERE id = %s', (data['tripId'],))
         trip = c.fetchone()
 
         if not trip:
             return jsonify({'error': 'Trip not found'}), 404
 
-        # Check room availability
+        # تحويل الـ tuple إلى dict
+        columns = [desc[0] for desc in c.description]
+        trip_dict = dict(zip(columns, trip))
+
+        # التحقق من توفر الغرفة المطلوبة
         room_status_field = f'room{data["roomType"]}_status'
-        if trip[room_status_field] == 'full':
+        if trip_dict[room_status_field] == 'full':
             return jsonify({'error': 'This room type is fully booked'}), 400
 
-        # Insert booking
+        # تسجيل الحجز
         c.execute('''INSERT INTO bookings 
             (trip_id, first_name, last_name, email, phone, birth_date, birth_place,
              passport_number, passport_issue_date, passport_expiry_date, umrah_type,
@@ -526,12 +530,15 @@ def create_booking():
             'message': 'Booking created successfully',
             'id': booking_id
         }), 201
+
     except Exception as e:
         logger.error(f"Error creating booking: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
     finally:
         if conn:
             conn.close()
+
 
 @app.route('/api/bookings/<int:booking_id>', methods=['PUT'])
 def update_booking(booking_id):

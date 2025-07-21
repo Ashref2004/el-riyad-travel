@@ -1,9 +1,11 @@
 from flask import Flask, jsonify, request, send_from_directory, render_template
 from flask_cors import CORS
 from datetime import datetime
-import sqlite3
+import psycopg2
 import os
 import logging
+from psycopg2.extras import DictCursor
+from urllib.parse import urlparse
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -13,22 +15,28 @@ app = Flask(__name__, static_folder='static', template_folder='.')
 
 CORS(app, resources={
     r"/api/*": {
-        "origins": ["https://el-riyad-travel.onrender.com"],
+        "origins": ["http://localhost:*", "http://127.0.0.1:*"],
         "methods": ["GET", "POST", "PUT", "DELETE"],
         "allow_headers": ["Content-Type"]
     }
 })
 
-
-DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'umrah.db')
+# PostgreSQL configuration
+DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://umrah_admin:9GDKSIxeUrhQLLI3yR3HpMLAO6jT2tHW@dpg-d1v54gh5pdvs73ct6s6g-a.oregon-postgres.render.com/umrah_mv09')
 
 def init_db():
+    conn = None
     try:
-        conn = sqlite3.connect(DB_PATH)
+        conn = get_db()
         c = conn.cursor()
 
+        # Drop tables if they exist (for development only)
+        c.execute("DROP TABLE IF EXISTS bookings")
+        c.execute("DROP TABLE IF EXISTS trips")
+
+        # Create trips table
         c.execute('''CREATE TABLE IF NOT EXISTS trips (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             date TEXT NOT NULL,
             airline TEXT NOT NULL,
             airline_logo TEXT,
@@ -51,7 +59,7 @@ def init_db():
 
         # Create bookings table
         c.execute('''CREATE TABLE IF NOT EXISTS bookings (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             trip_id INTEGER NOT NULL,
             first_name TEXT NOT NULL,
             last_name TEXT NOT NULL,
@@ -67,11 +75,11 @@ def init_db():
             notes TEXT,
             status TEXT NOT NULL DEFAULT 'pending',
             booking_date TEXT NOT NULL,
-            FOREIGN KEY (trip_id) REFERENCES trips (id)
+            FOREIGN KEY (trip_id) REFERENCES trips (id) ON DELETE CASCADE
         )''')
 
         # Check if tables exist
-        c.execute("SELECT name FROM sqlite_master WHERE type='table'")
+        c.execute("SELECT table_name FROM information_schema.tables WHERE table_schema='public'")
         tables = c.fetchall()
         logger.debug(f"Tables in database: {tables}")
 
@@ -80,15 +88,28 @@ def init_db():
         logger.error(f"Error initializing database: {str(e)}")
         raise
     finally:
-        conn.close()
+        if conn:
+            conn.close()
+
+def get_db():
+    try:
+        # Parse database URL
+        result = urlparse(DATABASE_URL)
+        conn = psycopg2.connect(
+            database=result.path[1:],
+            user=result.username,
+            password=result.password,
+            host=result.hostname,
+            port=result.port
+        )
+        conn.set_session(autocommit=False)
+        return conn
+    except Exception as e:
+        logger.error(f"Error connecting to database: {str(e)}")
+        raise
 
 # Initialize database
 init_db()
-
-def get_db():
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
 
 @app.route('/')
 def serve_index():
@@ -122,7 +143,7 @@ def get_all_trips():
     conn = None
     try:
         conn = get_db()
-        c = conn.cursor()
+        c = conn.cursor(cursor_factory=DictCursor)
 
         state_filter = request.args.get('state', 'all')
         type_filter = request.args.get('type', 'all')
@@ -131,13 +152,13 @@ def get_all_trips():
         params = []
 
         if state_filter != 'all':
-            query += ' WHERE state = ?'
+            query += ' WHERE state = %s'
             params.append(state_filter)
             if type_filter != 'all':
-                query += ' AND type = ?'
+                query += ' AND type = %s'
                 params.append(type_filter)
         elif type_filter != 'all':
-            query += ' WHERE type = ?'
+            query += ' WHERE type = %s'
             params.append(type_filter)
 
         logger.debug(f"Executing query: {query} with params: {params}")
@@ -190,9 +211,9 @@ def get_trip(trip_id):
     conn = None
     try:
         conn = get_db()
-        c = conn.cursor()
+        c = conn.cursor(cursor_factory=DictCursor)
 
-        c.execute('SELECT * FROM trips WHERE id = ?', (trip_id,))
+        c.execute('SELECT * FROM trips WHERE id = %s', (trip_id,))
         trip = c.fetchone()
 
         if not trip:
@@ -260,7 +281,8 @@ def create_trip():
             (date, airline, airline_logo, hotel, hotel_logo, hotel_distance, route, duration, type, state,
              room5_price, room5_status, room4_price, room4_status,
              room3_price, room3_status, room2_price, room2_status)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        RETURNING id''',
                   (
                       data['date'], 
                       data['airline'], 
@@ -282,7 +304,7 @@ def create_trip():
                       'available'
                   ))
 
-        trip_id = c.lastrowid
+        trip_id = c.fetchone()[0]
         conn.commit()
 
         return jsonify({
@@ -308,13 +330,13 @@ def delete_trip(trip_id):
         c = conn.cursor()
 
         # تحقق هل توجد حجوزات مرتبطة بالرحلة
-        c.execute('SELECT COUNT(*) FROM bookings WHERE trip_id = ?', (trip_id,))
+        c.execute('SELECT COUNT(*) FROM bookings WHERE trip_id = %s', (trip_id,))
         bookings_count = c.fetchone()[0]
 
         if bookings_count > 0:
             return jsonify({'error': 'Cannot delete trip with existing bookings'}), 400
 
-        c.execute('DELETE FROM trips WHERE id = ?', (trip_id,))
+        c.execute('DELETE FROM trips WHERE id = %s', (trip_id,))
         conn.commit()
 
         return jsonify({'message': 'Trip deleted successfully'})
@@ -325,8 +347,6 @@ def delete_trip(trip_id):
         if conn:
             conn.close()
 
-
-
 @app.route('/api/trips/<int:trip_id>', methods=['PUT'])
 def update_trip(trip_id):
     conn = None
@@ -336,9 +356,9 @@ def update_trip(trip_id):
             return jsonify({'error': 'No data provided'}), 400
 
         conn = get_db()
-        c = conn.cursor()
+        c = conn.cursor(cursor_factory=DictCursor)
 
-        c.execute('SELECT * FROM trips WHERE id = ?', (trip_id,))
+        c.execute('SELECT * FROM trips WHERE id = %s', (trip_id,))
         trip = c.fetchone()
 
         if not trip:
@@ -362,10 +382,10 @@ def update_trip(trip_id):
         }
 
         c.execute('''UPDATE trips SET 
-                        date = ?, airline = ?, airline_logo = ?, hotel = ?, hotel_logo = ?, 
-                        hotel_distance = ?, route = ?, duration = ?, type = ?, state = ?, 
-                        room5_price = ?, room4_price = ?, room3_price = ?, room2_price = ?
-                     WHERE id = ?''',
+                        date = %s, airline = %s, airline_logo = %s, hotel = %s, hotel_logo = %s, 
+                        hotel_distance = %s, route = %s, duration = %s, type = %s, state = %s, 
+                        room5_price = %s, room4_price = %s, room3_price = %s, room2_price = %s
+                     WHERE id = %s''',
                   (
                       update_fields['date'], 
                       update_fields['airline'], 
@@ -415,15 +435,15 @@ def update_trip_status(trip_id):
         conn = get_db()
         c = conn.cursor()
 
-        c.execute('SELECT * FROM trips WHERE id = ?', (trip_id,))
+        c.execute('SELECT * FROM trips WHERE id = %s', (trip_id,))
         trip = c.fetchone()
 
         if not trip:
             return jsonify({'error': 'Trip not found'}), 404
 
         c.execute('''UPDATE trips SET 
-            room5_status = ?, room4_status = ?, room3_status = ?, room2_status = ?
-            WHERE id = ?''',
+            room5_status = %s, room4_status = %s, room3_status = %s, room2_status = %s
+            WHERE id = %s''',
                   (
                       data['room5_status'], 
                       data['room4_status'],
@@ -464,7 +484,7 @@ def create_booking():
         c = conn.cursor()
 
         # Check if trip exists
-        c.execute('SELECT * FROM trips WHERE id = ?', (data['tripId'],))
+        c.execute('SELECT * FROM trips WHERE id = %s', (data['tripId'],))
         trip = c.fetchone()
 
         if not trip:
@@ -480,7 +500,8 @@ def create_booking():
             (trip_id, first_name, last_name, email, phone, birth_date, birth_place,
              passport_number, passport_issue_date, passport_expiry_date, umrah_type,
              room_type, notes, booking_date)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            RETURNING id''',
                   (
                       data['tripId'], 
                       data['firstName'], 
@@ -498,7 +519,7 @@ def create_booking():
                       datetime.now().isoformat()
                   ))
 
-        booking_id = c.lastrowid
+        booking_id = c.fetchone()[0]
         conn.commit()
 
         return jsonify({
@@ -526,13 +547,13 @@ def update_booking(booking_id):
         conn = get_db()
         c = conn.cursor()
 
-        c.execute('SELECT * FROM bookings WHERE id = ?', (booking_id,))
+        c.execute('SELECT * FROM bookings WHERE id = %s', (booking_id,))
         booking = c.fetchone()
 
         if not booking:
             return jsonify({'error': 'Booking not found'}), 404
 
-        c.execute('UPDATE bookings SET status = ? WHERE id = ?',
+        c.execute('UPDATE bookings SET status = %s WHERE id = %s',
                   (data['status'], booking_id))
 
         conn.commit()
@@ -551,13 +572,13 @@ def delete_booking(booking_id):
         conn = get_db()
         c = conn.cursor()
 
-        c.execute('SELECT * FROM bookings WHERE id = ?', (booking_id,))
+        c.execute('SELECT * FROM bookings WHERE id = %s', (booking_id,))
         booking = c.fetchone()
 
         if not booking:
             return jsonify({'error': 'Booking not found'}), 404
 
-        c.execute('DELETE FROM bookings WHERE id = ?', (booking_id,))
+        c.execute('DELETE FROM bookings WHERE id = %s', (booking_id,))
         conn.commit()
 
         return jsonify({'message': 'Booking deleted successfully'})
@@ -578,10 +599,10 @@ def get_stats():
         c.execute('SELECT COUNT(*) FROM bookings')
         total_bookings = c.fetchone()[0]
 
-        c.execute('SELECT COUNT(*) FROM bookings WHERE status = ?', ('pending',))
+        c.execute('SELECT COUNT(*) FROM bookings WHERE status = %s', ('pending',))
         pending_bookings = c.fetchone()[0]
 
-        c.execute('SELECT COUNT(*) FROM bookings WHERE status = ?', ('approved',))
+        c.execute('SELECT COUNT(*) FROM bookings WHERE status = %s', ('approved',))
         approved_bookings = c.fetchone()[0]
 
         c.execute('SELECT COUNT(*) FROM trips')
@@ -617,11 +638,11 @@ def get_bookings():
     conn = None
     try:
         conn = get_db()
-        c = conn.cursor()
+        c = conn.cursor(cursor_factory=DictCursor)
 
         c.execute('''SELECT b.*, t.date as trip_date, t.airline as trip_airline 
                      FROM bookings b JOIN trips t ON b.trip_id = t.id''')
-        bookings = c.fetchall()  # ✅ فقط مرة وحدة
+        bookings = c.fetchall()
 
         bookings_list = []
         for booking in bookings:
@@ -658,7 +679,6 @@ def get_bookings():
     finally:
         if conn:
             conn.close()
-           
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))

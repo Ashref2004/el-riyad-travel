@@ -13,11 +13,12 @@ app = Flask(__name__, static_folder='static', template_folder='.')
 
 CORS(app, resources={
     r"/api/*": {
-        "origins": ["http://localhost:*", "http://127.0.0.1:*"],
+        "origins": ["https://el-riyad-travel.onrender.com"],
         "methods": ["GET", "POST", "PUT", "DELETE"],
         "allow_headers": ["Content-Type"]
     }
 })
+
 
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'umrah.db')
 
